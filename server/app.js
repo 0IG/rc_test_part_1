@@ -23,6 +23,7 @@ function detectSQLInjection(req, res, next) {
   const bodyParams = JSON.stringify(req.body);
 
   // Check if query parameters or body contain SQL injection patterns
+  // Since this is localhost environment we get a loopback address in IPv6
   if (sqlInjectionPatterns.some((pattern) => pattern.test(queryParams) || pattern.test(bodyParams))) {
     const userIP = req.ip || req.headers["x-forwarded-for"] || req.connection.remoteAddress;
     console.log(`Potential SQL injection attempt detected from IP: ${userIP}`);
