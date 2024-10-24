@@ -19,7 +19,10 @@ root
 Follow these steps:
 
 1. Install dependencies for the client and server:
-
+  "dependencies": {
+   "validator": "^13.12.0",
+   "concurrently": "^9.0.1",
+  }
 ```
    npm run install:client
    npm run install:server
@@ -49,40 +52,43 @@ Visit http://localhost:3000 to see the React app.\
 Visit http://localhost:3001/users to view all users.\
 Visit http://localhost:3001/movies to view all movies.
 
-## React Application
+## React Application Overview
+The React app provides a simple interface to view and search for movies. For example, typing "The Matrix" in the search input box will display "The Matrix" along with its release date.
 
-The React app (accessible at http://localhost:3000), you'll see a simple interface with seven movie titles. You can search for these movies by typing their titles into the input box. For example, typing "The Matrix" will display "The Matrix" and its release date.
+## Backend Features
+### Endpoints:
 
+* /users: Fetch all users from the PostgreSQL database.
+* /movies: Fetch all movies from the PostgreSQL database.
+* /search: Search movies by title with input sanitization to prevent SQL injection.
+### Security Measures:
+
+SQL Injection Detection Middleware: The server includes middleware that detects potential SQL injection patterns in the query or request body. If a malicious pattern is detected, the request is rejected, and an error is logged.
+### Search Sanitization:
+
+The /search route uses the validator library to sanitize user inputs, preventing SQL injection by escaping harmful characters and validating the search query.
 ## SQL Injection Demonstration
-
-A sample SQL injection code is provided for demonstration:
-
-```
+To illustrate the impact of SQL injection, a vulnerable search endpoint was initially exposed. For example, the following input would return all users from the database:
 ' OR 1=1; SELECT * FROM users --
-```
+This behavior highlights the dangers of SQL injection when user input is not properly sanitized.
 
-Paste this code into the input box to see all users from the database. This exposes a significant security vulnerability.
+### Task Objectives
+Your main objectives in this project are:
 
-## Task
+### Identify and Fix Vulnerabilities:
 
-Your objectives are:
-
-Identify and Fix Vulnerabilities:
-
-Backend: Address the SQL injection vulnerabilities in the server code.
-Frontend: Implement measures to prevent the injection of malicious input.
-Research and Presentation:
+Backend: Address SQL injection vulnerabilities by implementing proper input sanitization and validation.
+Frontend: Prevent the injection of malicious input from the client-side application.
+### Research and Presentation:
 
 What is SQL Injection?
-Who is Affected?
-What Changes Were Made on the Backend?
-What Changes Were Made on the Client Side?
-Red Canary requires you to document your research and analytical process to evaluate your problem-solving skills.
+Who is affected?
+What changes were made on the backend?
+What changes were made on the frontend?
+Deliverables
+A GitHub repository link with the updated code.
+A PowerPoint presentation documenting your research, the vulnerabilities, and the steps taken to resolve them.
+Resources
+Refer to the Detection Engineer documentation for more details on best practices for detecting and mitigating SQL injection vulnerabilities.
 
-Please share the GitHub repository link and a PowerPoint presentation with your findings.
-
-You are expected to demonstrate your code and present your findings on SQL injection, including how you resolved the issues.
-
-Please refer to the Detection Engineer documentation for more information.
-
-If you have any questions, please slack me or email me at pak@pursuit.org
+For any questions, please reach out via Slack or email at pak@pursuit.org.
