@@ -79,14 +79,8 @@ Your main objectives in this project are:
 
 Backend: Address SQL injection vulnerabilities by implementing proper input sanitization and validation.
 Frontend: Prevent the injection of malicious input from the client-side application.
-### Research and Presentation:
 
-What is SQL Injection?
-Who is affected?
-What changes were made on the backend?
-What changes were made on the frontend?
-Deliverables
-A GitHub repository link with the updated code.
-A PowerPoint presentation documenting your research, the vulnerabilities, and the steps taken to resolve them.
-Resources
-Refer to the Detection Engineer documentation for more details on best practices for detecting and mitigating SQL injection vulnerabilities.
+## Important Links
+### [Sources](https://joinpursuit.notion.site/Sources-125d2512d7ba806bb762ebfd7f08c660)
+###  [Trello Board](https://trello.com/invite/b/671acb59948fbe8c03727cc0/ATTI549954698c11d8ad09f7c79cd645d54e7B8B4939/red-canary-take-home)
+### [JWT.io](https://jwt.io/)
