@@ -61,6 +61,56 @@ The React app provides a simple interface to view and search for movies. For exa
 * /users: Fetch all users from the PostgreSQL database.
 * /movies: Fetch all movies from the PostgreSQL database.
 * /search: Search movies by title with input sanitization to prevent SQL injection.
+
+## User Flow
+If you'd like to test other accounts I would recommend using a development testing tool such as Postman or input GET/POST request with your terminal/CLI.
+
+### Register User:
+#### Postman:
+```
+POST http://localhost:3001/register
+Content-Type: application/json
+
+{
+    "name": "redcanary",
+    "email": "redcanary@example.com",
+    "password": "TestPassword123@"
+}
+```
+#### Terminal:
+```
+curl -X POST \
+  http://localhost:3001/register \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "canary",
+    "email": "redcanary@example.com",
+    "password": "TestPassword123@"
+  }'
+  ```
+
+### Login:
+#### Postman:
+```
+POST http://localhost:3001/login
+Content-Type: application/json
+
+{
+  "email": "admin@admin.admin",
+  "password": "password"
+}
+```
+#### Terminal:
+```
+curl -X POST http://localhost:3001/login \
+-H 'Content-Type: application/json' \
+-d '{
+    "email": "test@example.com",
+    "password": "TestUser123@"
+}'
+```
+
+
 ### Security Measures:
 
 SQL Injection Detection Middleware: The server includes middleware that detects potential SQL injection patterns in the query or request body. If a malicious pattern is detected, the request is rejected, and an error is logged.
