@@ -3,13 +3,42 @@ const cors = require("cors");
 const pgp = require("pg-promise")();
 const logger = require("morgan");
 const validator = require("validator");
-
+const e = require("express");
 const app = express();
 
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 
+const authenticateUser = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  const email = req.headers.email;
+  const password = req.headers.password;
+
+  if (!authHeader || !email || !password) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  try {
+    const query = "SELECT * FROM users WHERE email = $1 AND password = $2";
+    const user = await db.oneOrNone(query, [email, password]);
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+  req.user = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role
+  }
+  
+  next();
+} catch (err) {
+  console.error(err.message);
+  res.status(500).json({ error: "An error occurred while processing your request." });
+}
+}
 // Middleware to detect possible SQL injection attempts
 function detectSQLInjection(req, res, next) {
   const sqlInjectionPatterns = [
@@ -33,6 +62,15 @@ function detectSQLInjection(req, res, next) {
   next();
 }
 
+function authorizeRole(role) {
+  return (req, res, next) => {
+    if (!req.user || req.user.role !== role) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+    next();
+  };
+}
+
 const cn = {
   host: "localhost",
   port: 5432,
@@ -44,7 +82,7 @@ const db = pgp(cn);
 
 app.use(detectSQLInjection); // Apply the middleware globally
 
-app.get("/users", async (req, res) => {
+app.get("/users", authenticateUser,authorizeRole("admin"), async (req, res) => {
   try {
     const query = "SELECT * FROM users";
     const result = await db.any(query);
@@ -82,7 +120,7 @@ app.get("/search", async (req, res) => {
   if (title.length > TITLE_LENGTH_LIMIT) {
     return res.status(400).json({ error: "Search query too long" });
   }
-
+  
   const sanitizeTitle = title.replace(/[%_]/g, '\\$&');
 
   try {
@@ -97,8 +135,66 @@ app.get("/search", async (req, res) => {
     console.error(err.message);
     res.status(500).json({ error: "An error occurred while processing your request." });
   }
+
+
+
+
+
 });
 
+app.post("/register", async (req, res) => {
+  const { email,name,password } = req.body;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  if (!passwordRegex.test(password)) {
+    return res.status(400).json({ message: "Password does not meet complexity requirements" });
+  }
+  if (!email || !name || !password) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  try {
+    const existingUser = await db.oneOrNone(
+      "SELECT * FROM users WHERE name = $1 OR email = $2", 
+      [name, email]
+    );
+
+    if (existingUser) {
+      if (existingUser.email === email) {
+        return res.status(400).json({ message: "Email already exists" });
+      }
+      return res.status(400).json({ message: "Username already exists" });
+    }
+    const newUser = await db.one(
+      "INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *",
+      [name, email, password]
+    )
+    res.status(201).json({
+      message: "User created successfully",
+      user: newUser});
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({
+      message: "An error occurred while processing your request.",
+    });
+  }
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const query = "SELECT * FROM users WHERE email = $1 AND password = $2";
+    const user = await db.oneOrNone(query, [email, password]);
+    if (!user) {
+      return res.status(401).json({ error: "Invalid username or password" });
+    } else {
+      return res.status(200).json({ message: "Login successful", user: user.name, role: user.role});
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "An error occurred while processing your request." });
+  }
+});
 const PORT = 3001;
 
 app.listen(PORT, () => {

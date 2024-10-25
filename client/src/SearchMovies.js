@@ -4,7 +4,6 @@ import axios from "axios";
 const SearchMovies = () => {
   const [title, setTitle] = useState("");
   const [results, setResults] = useState([]);
-
   const handleSearch = async (e) => {
     e.preventDefault();
     try {
