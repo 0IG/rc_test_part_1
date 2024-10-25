@@ -90,5 +90,3 @@ A GitHub repository link with the updated code.
 A PowerPoint presentation documenting your research, the vulnerabilities, and the steps taken to resolve them.
 Resources
 Refer to the Detection Engineer documentation for more details on best practices for detecting and mitigating SQL injection vulnerabilities.
-
-For any questions, please reach out via Slack or email at pak@pursuit.org.
