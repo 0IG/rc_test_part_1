@@ -3,7 +3,6 @@ const cors = require("cors");
 const pgp = require("pg-promise")();
 const logger = require("morgan");
 const validator = require("validator");
-const e = require("express");
 const app = express();
 
 app.use(cors());
