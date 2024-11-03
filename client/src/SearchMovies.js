@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "./SearchMovies.scss";
 
 const SearchMovies = () => {
   const [title, setTitle] = useState("");
@@ -18,29 +19,30 @@ const SearchMovies = () => {
   };
 
   return (
-    <div>
-      <div>
+    <div className="search">
+      <div className="search__info">
         Only search movie titles below:
-        <ul>
-          <li>The Matrix</li>
-          <li>The Godfather</li>
-          <li>The Dark Knight</li>
-          <li>Pulp Fiction</li>
-          <li>Inception</li>
-          <li>Avatar</li>
-          <li>Titanic</li>
+        <ul className="search__list">
+          <li className="search__list-item">The Matrix</li>
+          <li className="search__list-item">The Godfather</li>
+          <li className="search__list-item">The Dark Knight</li>
+          <li className="search__list-item">Pulp Fiction</li>
+          <li className="search__list-item">Inception</li>
+          <li className="search__list-item">Avatar</li>
+          <li className="search__list-item">Titanic</li>
         </ul>
       </div>
-      <form onSubmit={handleSearch}>
-        <label>
+      <form onSubmit={handleSearch} className="search__form">
+        <label className="search__label">
           Movie Title:
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            className="search__input"
           />
         </label>
-        <button type="submit">Search</button>
+        <button type="submit" className="search__btn">Search</button>
       </form>
       {results.length === 1 && results.length < 21 && (
         <ul>
